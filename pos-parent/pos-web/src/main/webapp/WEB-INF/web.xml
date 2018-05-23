@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <display-name>pos-web</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+   <!-- hibernate 延迟加载 -->
+  <filter>
+  	<filter-name>openSessionInView</filter-name>
+  	<filter-class>org.springframework.orm.hibernate5.support.OpenSessionInViewFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>openSessionInView</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <!-- spring配置文件存放路径 -->
+  <context-param>
+  	<param-name>contextConfigLocation</param-name>
+  	<param-value>classpath:applicationContext.xml</param-value>
+  </context-param>
+  
+  <!-- spring监听器，初设化就加载spring容器实例化bean -->
+   <listener>
+  	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+   <!--  <filter>
+    <filter-name>EncodeFilter</filter-name>
+    <filter-class>com.z4group.pos.utils.EncodeFilter</filter-class>
+    <init-param>
+      <param-name>encode</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+   <filter-mapping>
+    <filter-name>EncodeFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+   -->
+  <!-- shiro过滤器 ，要放在struts之前-->
+  <filter>
+  		<filter-name>shiroFilter</filter-name>
+  		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>shiroFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <!-- struts2过滤器，用struts2必备 -->
+  <filter>
+  	<filter-name>struts2</filter-name>
+  	<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>struts2</filter-name>
+  	<url-pattern>/*</url-pattern>
+  	<dispatcher>REQUEST</dispatcher>
+  	<dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+  
+</web-app>

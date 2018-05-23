@@ -1,0 +1,17 @@
+[
+		{ "id":"11", "pId":"0", "name":"菜单大全"},
+		{ "id":"111", "pId":"11", "name":"全部菜单","page":"page_base_dish.action?dirId=1"},
+		{ "id":"112", "pId":"11", "name":"主食"},
+		{ "id":"113", "pId":"11", "name":"饮料酒水"},
+		
+		{ "id":"1112", "pId":"112", "name":"冷菜", "page":"page_base_dish.action?dirId=1001"},
+		{ "id":"1113", "pId":"112", "name":"排类", "page":"page_base_dish.action?dirId=1002"},
+		{ "id":"1114", "pId":"112", "name":"面类", "page":"page_base_dish.action?dirId=1003"},
+		{ "id":"1115", "pId":"112", "name":"披萨", "page":"page_base_dish.action?dirId=1004"},
+		{ "id":"1116", "pId":"112", "name":"沙拉", "page":"page_base_dish.action?dirId=1005"},
+		{ "id":"1116", "pId":"112", "name":"甜食", "page":"page_base_dish.action?dirId=1006"},
+		{ "id":"1117", "pId":"112", "name":"汤", "page":"page_base_dish.action?dirId=1007"},
+		
+		{ "id":"1123", "pId":"113", "name":"饮料","page":"page_base_dish.action?dirId=1008"},
+		{ "id":"1124", "pId":"113", "name":"酒","page":"page_base_dish.action?dirId=1009"}
+]
