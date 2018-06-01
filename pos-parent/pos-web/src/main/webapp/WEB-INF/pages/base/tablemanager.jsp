@@ -29,7 +29,7 @@
 <script type="text/javascript"
 	src="${pageContext.request.contextPath }/js/jquery.ocupload-1.1.2.js"></script>
 <script type="text/javascript">
-	
+	var tablestatusid;
 	
 	function doAdd(index){
 		//获得选中的行对象
@@ -59,7 +59,6 @@
 	   	 var rows = $("#grid").datagrid("getSelections");
 	   	 var id = rows[0].id;
 	   	var oid = rows[0].orderNo;
-	   	alert(oid);
 	   	 //保存餐台的id
 	   	$.post('tableManagerAction_saveTableId.action',{"id":id,"oid":oid},function(data){});
 	   	 //点菜创建新单
@@ -183,9 +182,14 @@
 	
 		  function doSearch(value,name){ //用户输入用户名,点击搜素,触发此函数  
 			  var seatnum=$("input[name=searchtype]").val();
+		  	  if(seatnum=="输入就餐人数"){
+		  		seatnum=0;
+		  	  }
 			 	 /* var p=$("#searchtype").serializeJson();
 				console.info(p); */
-				$("#grid").datagrid("load",{"seatnum":seatnum});/* 
+		  	
+			$("#grid").datagrid("load",{"seatnum":seatnum,"statusid":tablestatusid});
+				/* 
 				$("#searchWindow").window("close"); */
 		           
 		    }  
@@ -214,15 +218,16 @@
 		align : 'center',
 		
 	}, {
-		field : 'tableStatus',
+		field : 'tableStatusName',
 		title : '餐桌状态',
 		width : 120,
 		formatter : function(data,row, index){
-			if(data=="0"){
+			if(row.tableStatus==null){
 				return "空闲";
 			}else{
-				return "满座";
+				return row.tableStatus.statusName;
 			}
+			
 		},
 		align : 'center',
 		
@@ -242,20 +247,26 @@
 		width : 120,
 		align : 'center',
 		formatter : function(data,row,index){ 
-			if(row.tableStatus=="2"){
-				var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a>  <a href="#"  name="paymoney" class="easyui-linkbutton" onclick="endOrderWindow('+index+')"></a>';  
-			      return str;  
-			}else if(row.tableStatus=="1"){
-				var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a>';  
-			      return str;  
-			    
-			}else if(row.tableStatus=="0"){
+			if(row.tableStatus==null){
 				var str = '<a href="#"  name="opera" class="easyui-linkbutton" onclick="doAdd('+index+')"></a>';  
-			      return str;  
+			      return str; 
 			}else{
-				var str = '<a href="#"  name="cleantable" class="easyui-linkbutton" onclick="cleantable('+index+')"></a>';  
-			      return str;  
+				if(row.tableStatus.statusid=="3"){
+					var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a>  <a href="#"  name="paymoney" class="easyui-linkbutton" onclick="endOrderWindow('+index+')"></a>';  
+				      return str;  
+				}else if(row.tableStatus.statusid=="2"){
+					var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a>';  
+				      return str;  
+				    
+				}else if(row.tableStatus.statusid=="1"){
+					var str = '<a href="#"  name="opera" class="easyui-linkbutton" onclick="doAdd('+index+')"></a>';  
+				      return str;  
+				}else{
+					var str = '<a href="#"  name="cleantable" class="easyui-linkbutton" onclick="cleantable('+index+')"></a>';  
+				      return str;  
+				}
 			}
+			
 			 
 			}
 		
@@ -484,18 +495,23 @@
 		
 		$('#category').combobox({ 
 
-			url:'tableManagerAction_findAll.action', 
+			url:'tableStatusAction_findAll.action', 
 
-			valueField:'tableStatus', 
+			valueField:'statusid', 
 
-			textField:'tableStatusName',
+			textField:'statusName',
 			
 			onSelect: function (data) {
 				
 				  var seatnum=$("input[name=searchtype]").val();
 				 	 /* var p=$("#searchtype").serializeJson();
 					console.info(p); */
-					$("#grid").datagrid("load",{"seatnum":seatnum,"tableStatus":data.id});/* 
+					
+					if(seatnum=='输入就餐人数'){
+						seatnum=0;
+					}
+					tablestatusid=data.statusid;
+					$("#grid").datagrid("load",{"seatnum":seatnum,"statusid":data.statusid});/* 
 				/* $('#grid').datagrid( {
 	                url: "dishAction_findByCategoryId.action?category.id="+data.id
 				
@@ -551,15 +567,14 @@
 		});   
 	           
 		$.extend($.fn.validatebox.defaults.rules, {  
-			 integer: {// 验证整数 可正负数  
-			               validator: function (value) {  
-			                   //return /^[+]?[1-9]+\d*$/i.test(value);  
-			  
-			                   return /^([+]?[0-9])|([-]?[0-9])+\d*$/i.test(value);  
-			               },  
-			               message: '请输入整数'  
-			           },  
-			}); 
+			integer:{
+		          validator:function(value,param){
+		            return /^[+]?[0-9]\d*$/.test(value);
+		          },
+		          message: '找零不能为负'
+		        }
+			}
+		); 
 		
 		
 	});
@@ -642,7 +657,7 @@
 							<td><input type="text" onblur="getchange()"  name="realreceivemoney" required="true" class="easyui-validatebox"  /></td>
 						
 							<td>找零</td>
-							<td><input type="text" name="change" readonly="true" class="easyui-validatebox"  required="true"/></td>
+							<td><input type="text" name="change" readonly="true" class="easyui-validatebox"  data-options="validType:'integer'"/></td>
 						</tr>
 						<tr>
 							<td colspan="2"><a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">结账</a> </td>

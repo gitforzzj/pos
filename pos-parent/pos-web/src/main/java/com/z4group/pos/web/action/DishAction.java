@@ -50,7 +50,7 @@ public class DishAction extends BaseAction<Dish> {
 	
 	private String dishFileFileName;
 	
-	
+	private String dishId;
 
 
 	
@@ -174,6 +174,9 @@ public class DishAction extends BaseAction<Dish> {
 		if(StringUtils.isNotBlank(dishid)) {
 			dc.add(Restrictions.or(Restrictions.like("dishid", "%"+dishid+"%"),Restrictions.like("dishname", "%"+dishid+"%")));
 		}
+		if(model.getCategory()!=null&&!model.getCategory().getId().equals("-1")) {
+			dc.add(Restrictions.eq("category.id", model.getCategory().getId()));
+		}
 		
 		
 		dishService.pageQuery(pageBean);/*
@@ -236,6 +239,16 @@ public class DishAction extends BaseAction<Dish> {
 
 	public void setDishFile(File dishFile) {
 		this.dishFile = dishFile;
+	}
+
+
+	public String getDishId() {
+		return dishId;
+	}
+
+
+	public void setDishId(String dishId) {
+		this.dishId = dishId;
 	}
 	
 }

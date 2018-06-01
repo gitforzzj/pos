@@ -8,11 +8,9 @@ import com.z4group.pos.utils.PageBean;
 
 public interface ITableManagerDao extends IBaseDao<DinnerTable>{
 
-	void openTable(String id);
+	
 
 	List<DinnerTable> findNoSeat();
-
-	void cleanTable(String id);
 
 
 }

@@ -25,6 +25,7 @@ import com.z4group.pos.service.IOrderDetailService;
 import com.z4group.pos.service.IOrderService;
 import com.z4group.pos.service.IPayService;
 import com.z4group.pos.service.ITableManagerService;
+import com.z4group.pos.service.ITableStatusService;
 import com.z4group.pos.web.action.base.BaseAction;
 
 
@@ -44,6 +45,9 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 	
 	@Autowired
 	private ITableManagerService tableManagerService;
+	@Autowired 
+	private ITableStatusService tableStatusService;
+	
 	
 	private String orderdishid;
 	private String checktaste;
@@ -235,8 +239,8 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 		Order order = common();
 		DinnerTable table = order.getDinnerTable();
 		
-		//0表示空桌，1表示开桌了但未点菜，2表示开桌且已点菜，3表示结账等待清桌
-		table.setTableStatus(2);
+		//1表示空桌，2表示开桌了但未点菜，3表示开桌且已点菜，4表示结账等待清桌
+		table.setTableStatus(tableStatusService.findById(new Integer(3)));;
 		tableManagerService.update(table);
 		map.put(table.getOrderTime(), order.getOid());
 		 ServletActionContext.getRequest().getSession().setAttribute("map",map);
@@ -262,7 +266,7 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 			orderService.update(order);
 			DinnerTable table = order.getDinnerTable();
 			//0表示空桌，1表示满桌，2表示等待清桌
-			table.setTableStatus(3);
+			table.setTableStatus(tableStatusService.findById(3));
 			tableManagerService.update(table);
 			map.put(table.getOrderTime(), order.getOid());
 			ServletActionContext.getRequest().getSession().setAttribute("map",map);

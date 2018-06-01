@@ -11,22 +11,8 @@ import com.z4group.pos.domain.DinnerTable;
 @Repository
 public class TableManagerDaoImpl  extends BaseDaoImpl<DinnerTable> implements ITableManagerDao {
 
-	@Override
-	public void openTable(String id) {
-		DinnerTable table = findById(id);
-		table.setOrderTime(new Timestamp(System.currentTimeMillis()));
-		table.setTableStatus(1);
-		update(table);
-	}
+
 	
-	@Override
-	public void cleanTable(String id) {
-		DinnerTable table = findById(id);
-		table.setOrderTime(null);
-		table.setTableStatus(0);
-		table.setOrders(null);
-		update(table);
-	}
 
 
 	@Override

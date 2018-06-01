@@ -9,7 +9,6 @@ public interface ITableManagerService {
 
 	void pageQuery(PageBean pageBean);
 
-	void openTable(String id);
 
 	List<DinnerTable> findAll();
 
@@ -19,6 +18,5 @@ public interface ITableManagerService {
 
 	void update(DinnerTable table);
 
-	void cleanTable(String id);
 
 }

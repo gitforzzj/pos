@@ -23,11 +23,7 @@ public class TableManagerServiceImpl implements ITableManagerService{
 		tableManagerDao.pageQuery(pageBean);
 	}
 
-	@Override
-	public void openTable(String id) {
-		tableManagerDao.openTable(id);
-		
-	}
+	
 
 	@Override
 	public List<DinnerTable> findAll() {
@@ -50,11 +46,6 @@ public class TableManagerServiceImpl implements ITableManagerService{
 	public void update(DinnerTable table) {
 		// TODO Auto-generated method stub
 		tableManagerDao.update(table);
-	}
-
-	@Override
-	public void cleanTable(String id) {
-		tableManagerDao.cleanTable(id);
 	}
 
 }

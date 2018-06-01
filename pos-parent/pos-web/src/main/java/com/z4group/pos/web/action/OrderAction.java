@@ -13,12 +13,11 @@ import org.springframework.stereotype.Controller;
 
 import com.z4group.pos.domain.DinnerTable;
 import com.z4group.pos.domain.Order;
-import com.z4group.pos.domain.OrderDetail;
 import com.z4group.pos.domain.Pay;
-import com.z4group.pos.domain.User;
 import com.z4group.pos.service.IOrderService;
 import com.z4group.pos.service.IPayService;
 import com.z4group.pos.service.ITableManagerService;
+import com.z4group.pos.service.ITableStatusService;
 import com.z4group.pos.web.action.base.BaseAction;
 
 
@@ -31,6 +30,8 @@ public class OrderAction extends BaseAction<Order>{
 	private IPayService payService;
 	@Autowired
 	private ITableManagerService  tableManagerService;
+	@Autowired
+	private ITableStatusService  tableStatusService;
 	
 	private double realreceivemoney;
 	
@@ -67,8 +68,8 @@ public class OrderAction extends BaseAction<Order>{
 		order.setPay(pay);
 		orderService.update(order);
 		DinnerTable table = order.getDinnerTable();
-		//0表示空桌，1表示开桌了但未点菜，2表示开桌且已点菜，3表示结账等待清桌
-		table.setTableStatus(3);
+		//1表示空桌，2表示开桌了但未点菜，3表示开桌且已点菜，4表示结账等待清桌
+		table.setTableStatus(tableStatusService.findById(4));
 		tableManagerService.update(table);
 		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
         ServletActionContext.getResponse().getWriter().print(f);

@@ -255,7 +255,8 @@
 			  var dishid=$("input[name=searchtype]").val();
 			 	 /* var p=$("#searchtype").serializeJson();
 				console.info(p); */
-				$("#grid").datagrid("load",{"dishid":dishid});/* 
+				$("#grid").datagrid("load",{"dishid":dishid});
+				/* 
 				$("#searchWindow").window("close"); */
 		           
 		    }  
@@ -377,6 +378,7 @@
 		title : '菜品编号',
 		width : 120,
 		align : 'center',
+		hidden:'true',
 		formatter : function(data, row, index) {
 			return row.dishes.dishid;
 		}
@@ -403,6 +405,7 @@
 	},{
 		field : 'unit',
 		title : '单位',
+		hidden:'true',
 		width : 120,
 		align : 'center',
 		formatter : function(data, row, index) {
@@ -593,10 +596,11 @@
 			textField:'name',
 			
 			onSelect: function (data) {
-				$('#grid').datagrid( {
+				$("#grid").datagrid("load",{"category.id":data.id});
+				/* $('#grid').datagrid( {
 	                url: "dishAction_findByCategoryId.action?category.id="+data.id
 				
-				});
+				}); */
 			}
 		});
 		
@@ -730,7 +734,7 @@
 <!-- </div>  -->
 	<div class="easyui-layout" data-options="fit:true">
 
-		<div data-options="region:'east'" style="width: 800px; padding: 10px">
+		<div data-options="region:'east'" style="width:550px; padding: 10px">
 			
 			 <table id="orderDetailGrid">
 
@@ -756,10 +760,10 @@
 
 				<div id="tb" style="float: left;">
 					<input id="searchtype" name="searchtype" class="easyui-searchbox" prompt="输入菜单编号"
-						searcher="doSearch" style="width: 180px; vertical-align: middle;"></input>
+						searcher="doSearch" style="width:120px;margin-right:20px;vertical-align: middle;"></input>
 				</div>
 
-				<div class="datagrid-btn-separator"></div>
+				
 
 				<!--
                 <div class="datagrid-btn-separator"></div>  
@@ -797,9 +801,9 @@
                 </div>  
                  -->
 
-				<div style="float: left;">
-					<font color="blue">选择类别:</font> <input id="category"
-						name="category" value="全部分类">
+				<div style="float: left;margin-left:20px">
+					<font color="blue" >选择类别:</font> <input id="category"
+						name="category" value="全部分类" style="width:100px;margin-right:20px;">
 				</div>
 				<div style="float: left;margin-left:30px;margin-top:5px">
 					<font color="blue">当前桌号:${session.savetableId}</font> 
@@ -811,17 +815,17 @@
 				<input type="hidden" name="itemid">
 				<div id="tb" style="float: left;">
 					<font color="blue">数量:</font> <input id="num" name="num"
-						class="easyui-textbox" value="1">
+						class="easyui-textbox" value="1" style="width:60px;margin-right:20px;">
 				</div>
-				&nbsp;
-				<div class="datagrid-btn-separator"></div>
+				<!-- &nbsp;
+				<div class="datagrid-btn-separator"></div> -->
 
 				<div id="tb" style="float: left;">
 					<font color="blue">口味:</font> <input id="taste"
-						class="easyui-textbox" name="taste" value="正常">
+						class="easyui-textbox" name="taste" value="正常" style="width:60px;margin-right:20px;">
 				</div>
 				<!-- </form> -->
-				<div class="datagrid-btn-separator"></div>
+			<!-- 	<div class="datagrid-btn-separator"></div> -->
 				<!-- <div style="float: left;">
 					<a href="#" class="easyui-linkbutton" plain="true" icon="icon-edit"
 						onclick="newOrder()">新单</a>

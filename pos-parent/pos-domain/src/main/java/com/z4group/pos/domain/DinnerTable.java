@@ -18,24 +18,26 @@ public class DinnerTable implements java.io.Serializable {
 	// Fields
 
 	private String id;
+	private TableStatus tableStatus;
 	private Integer tableNo;
-	private Integer tableStatus;
-	private Date orderTime;
 	private Integer seatnum;
+	private Date orderTime;
 	private Set orders = new HashSet(0);
 
-	// Constructors
-
+	
+	
 	public String getOrderNo() {
-		
-		if(tableStatus==2||tableStatus==3) {
-			 HashMap map = (HashMap) ServletActionContext.getRequest().getSession().getAttribute("map");
-			 if(map!=null) {
-				 String  orderNo = (String) map.get(orderTime);
-				 return orderNo;
-			 }
-			 
+		if(tableStatus!=null&&!tableStatus.equals("")) {
+			if(tableStatus.getStatusid()==2||tableStatus.getStatusid()==3) {
+				 HashMap map = (HashMap) ServletActionContext.getRequest().getSession().getAttribute("map");
+				 if(map!=null) {
+					 String  orderNo = (String) map.get(orderTime);
+					 return orderNo;
+				 }
+				 
+			}
 		}
+		
 		
 		return null;
 	}
@@ -49,24 +51,26 @@ public class DinnerTable implements java.io.Serializable {
 		 return null;
 	}
 	
+	// Constructors
+
 	/** default constructor */
 	public DinnerTable() {
 	}
 
 	/** minimal constructor */
-	public DinnerTable(String id, Integer tableNo, Integer tableStatus) {
+	public DinnerTable(String id, Integer tableNo) {
 		this.id = id;
 		this.tableNo = tableNo;
-		this.tableStatus = tableStatus;
 	}
 
 	/** full constructor */
-	public DinnerTable(String id, Integer tableNo, Integer tableStatus, Date orderTime, Integer seatnum, Set orders) {
+	public DinnerTable(String id, TableStatus tableStatus, Integer tableNo, Integer seatnum, Date orderTime,
+			Set orders) {
 		this.id = id;
-		this.tableNo = tableNo;
 		this.tableStatus = tableStatus;
-		this.orderTime = orderTime;
+		this.tableNo = tableNo;
 		this.seatnum = seatnum;
+		this.orderTime = orderTime;
 		this.orders = orders;
 	}
 
@@ -80,6 +84,14 @@ public class DinnerTable implements java.io.Serializable {
 		this.id = id;
 	}
 
+	public TableStatus getTableStatus() {
+		return this.tableStatus;
+	}
+
+	public void setTableStatus(TableStatus tableStatus) {
+		this.tableStatus = tableStatus;
+	}
+
 	public Integer getTableNo() {
 		return this.tableNo;
 	}
@@ -88,14 +100,12 @@ public class DinnerTable implements java.io.Serializable {
 		this.tableNo = tableNo;
 	}
 
-	public Integer getTableStatus() {
-		return this.tableStatus;
+	public Integer getSeatnum() {
+		return this.seatnum;
 	}
 
-	public void setTableStatus(Integer tableStatus) {
-		
-		
-		this.tableStatus = tableStatus;
+	public void setSeatnum(Integer seatnum) {
+		this.seatnum = seatnum;
 	}
 
 	public Date getOrderTime() {
@@ -104,16 +114,6 @@ public class DinnerTable implements java.io.Serializable {
 
 	public void setOrderTime(Date orderTime) {
 		this.orderTime = orderTime;
-	}
-
-	
-	
-	public Integer getSeatnum() {
-		return this.seatnum;
-	}
-
-	public void setSeatnum(Integer seatnum) {
-		this.seatnum = seatnum;
 	}
 
 	public Set getOrders() {

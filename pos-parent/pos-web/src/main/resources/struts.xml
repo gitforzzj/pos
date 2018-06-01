@@ -34,5 +34,8 @@
 		<action name="tableManagerAction_*" class="tableManagerAction" method="{1}">
 			<!-- <result name="list">/WEB-INF/pages/base/ordeing.jsp</result> -->
 		</action>
+		<action name="tableStatusAction_*" class="tableStatusAction" method="{1}">
+			<!-- <result name="list">/WEB-INF/pages/base/ordeing.jsp</result> -->
+		</action>
 	</package>
 </struts>

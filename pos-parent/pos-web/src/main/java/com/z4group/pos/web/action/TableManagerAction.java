@@ -2,6 +2,7 @@ package com.z4group.pos.web.action;
 
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,9 @@ import com.opensymphony.xwork2.ActionContext;
 import com.z4group.pos.domain.Category;
 import com.z4group.pos.domain.DinnerTable;
 import com.z4group.pos.domain.OrderDetail;
+import com.z4group.pos.domain.TableStatus;
 import com.z4group.pos.service.ITableManagerService;
+import com.z4group.pos.service.ITableStatusService;
 import com.z4group.pos.web.action.base.BaseAction;
 
 @Controller
@@ -31,24 +34,33 @@ public class TableManagerAction extends BaseAction<DinnerTable> {
 	private static final long serialVersionUID = 1L;
 	@Autowired
 	private ITableManagerService tableManagerService;
+	@Autowired
+	private ITableStatusService tableStatusService;
 	
 	private String oid;
-	
+	private Integer statusid;
 	/*
 	 * 分页查询，调用service执行业务方法，并将查到的数据转为json对象
 	 */
 	public String pageQuery() {/*
 		String id = (String) ActionContext.getContext().getSession().get("dirId");*/
 		DetachedCriteria dc = pageBean.getDetachedCriteria();
-		Integer seatnum = model.getSeatnum();
-		if(seatnum!=null) {
-			dc.add(Restrictions.or(Restrictions.gt("seatnum", seatnum)));
-			/*if(StringUtils.isNotBlank(dishid)) 
-			}*/
+		if(model.getSeatnum()!=null) {
+			Integer seatnum = model.getSeatnum();
+			dc.add(Restrictions.or(Restrictions.gt("seatnum", seatnum),Restrictions.eq("seatnum", seatnum)));
 		}
-		Integer tableStatus = model.getTableStatus();
+		
+		TableStatus tableStatus=null;
+		if(statusid!=null&&statusid==-1) {
+			statusid=null;
+		}
+
+		if(statusid!=null) {
+			tableStatus = tableStatusService.findById(statusid);
+		}
+		 
 		if(tableStatus!=null) {
-			dc.add(Restrictions.or(Restrictions.eq("seatnum", seatnum)));
+			dc.add(Restrictions.or(Restrictions.eq("tableStatus", tableStatus)));
 			/*if(StringUtils.isNotBlank(dishid)) 
 			}*/
 		}
@@ -56,20 +68,20 @@ public class TableManagerAction extends BaseAction<DinnerTable> {
 		tableManagerService.pageQuery(pageBean);/*
 		ActionContext.getContext().getSession().put("dirId", null);*/
 		//将返回的list集合转为json对象
-		this.java2json(pageBean, new String[] {"orders","orderTime"});
+		this.java2json(pageBean, new String[] {"orders","orderTime","dinnerTables"});
 		return NONE;
 	}
 	
 	public String findAll() {
 		List<DinnerTable> list = tableManagerService.findAll();
-		this.java2json(list, new String[] {"orders"});
+		this.java2json(list, new String[] {"orders","dinnerTables"});
 		return NONE;
 	}
 	
 
 	public String findNoSeat() {
 		List<DinnerTable> list = tableManagerService.findNoSeat();
-		this.java2json(list, new String[] {"orders"});
+		this.java2json(list, new String[] {"orders","dinnerTables"});
 		return NONE;
 	}
 	
@@ -88,7 +100,12 @@ public class TableManagerAction extends BaseAction<DinnerTable> {
 			String f = "1";
 			try {
 			
-				 tableManagerService.openTable(model.getId());
+				 DinnerTable table = tableManagerService.findById(model.getId());
+					table.setOrderTime(new Timestamp(System.currentTimeMillis()));
+					//2入座未点菜
+					table.setTableStatus(tableStatusService.findById(2));;
+					tableManagerService.update(table);
+				 
 				 //创建一个新单
 				 ServletActionContext.getRequest().getSession().setAttribute("orderDetailList", new ArrayList<OrderDetail>());
 			}catch(Exception e){
@@ -106,7 +123,10 @@ public class TableManagerAction extends BaseAction<DinnerTable> {
 		String f = "1";
 		try {
 		
-			 tableManagerService.cleanTable(model.getId());
+			DinnerTable table = tableManagerService.findById(model.getId());
+				table.setOrderTime(null);
+				table.setTableStatus(tableStatusService.findById(1));;
+				tableManagerService.update(table);
 		}catch(Exception e){
 			e.printStackTrace();
 			f="-1";
@@ -124,6 +144,16 @@ public class TableManagerAction extends BaseAction<DinnerTable> {
 	public void setOid(String oid) {
 		this.oid = oid;
 	}
+
+	public Integer getStatusid() {
+		return statusid;
+	}
+
+	public void setStatusid(Integer statusid) {
+		this.statusid = statusid;
+	}
+
+
 
 	
 		
