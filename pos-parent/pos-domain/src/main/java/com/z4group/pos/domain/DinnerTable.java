@@ -39,6 +39,15 @@ public class DinnerTable implements java.io.Serializable {
 		
 		return null;
 	}
+	public String getTableOrderTime() {
+		 DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+		 if(orderTime!=null) {
+
+			 String tableOrderTime = sdf.format(this.orderTime); 
+			 return tableOrderTime;
+		 }
+		 return null;
+	}
 	
 	/** default constructor */
 	public DinnerTable() {
@@ -97,15 +106,7 @@ public class DinnerTable implements java.io.Serializable {
 		this.orderTime = orderTime;
 	}
 
-	public String getTableOrderTime() {
-		 DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-		 if(orderTime!=null) {
-
-			 String tableOrderTime = sdf.format(this.orderTime); 
-			 return tableOrderTime;
-		 }
-		 return null;
-	}
+	
 	
 	public Integer getSeatnum() {
 		return this.seatnum;

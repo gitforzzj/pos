@@ -641,19 +641,18 @@
 	           
 		
 		$("#afterdinner").click(function(){
-			var p=$("#endOrderForm").serializeJson();
-			var v=$("#endOrderForm").form("validate");
-			if(v){
-				console.info(p);
-				$("#endOrderWindow").window("close");
-				$.post('orderDetailAction_saveOrder.action',p,function(data){
+			/* var p=$("#endOrderForm").serializeJson();
+			var v=$("#endOrderForm").form("validate"); */
+			/* if(v){ */
+				/* $("#endOrderWindow").window("close"); */
+				$.post('orderDetailAction_saveOrder.action',{},function(data){
 					 if(data == 1){
 						
 						$("#orderDetailGrid").datagrid("load");
 						parent.RefreshCloudHomePageTab("餐桌管理");
 					} 
 				}); 
-			}
+			/* } */
 		}); 
 		
 		$.extend($.fn.validatebox.defaults.rules, {  
@@ -802,6 +801,9 @@
 					<font color="blue">选择类别:</font> <input id="category"
 						name="category" value="全部分类">
 				</div>
+				<div style="float: left;margin-left:30px;margin-top:5px">
+					<font color="blue">当前桌号:${session.savetableId}</font> 
+				</div>
 				<br>
 				<br>
 				<br>
@@ -820,20 +822,21 @@
 				</div>
 				<!-- </form> -->
 				<div class="datagrid-btn-separator"></div>
-				<div style="float: left;">
+				<!-- <div style="float: left;">
 					<a href="#" class="easyui-linkbutton" plain="true" icon="icon-edit"
 						onclick="newOrder()">新单</a>
-				</div>
+				</div> -->
 
 				<!-- <div class="datagrid-btn-separator"></div>
 				<div style="float: left;">
 					<a  class="easyui-linkbutton" plain="true" icon="icon-add"
 						onclick="doAdd()">点菜</a>
 				</div> -->
-				<div class="datagrid-btn-separator"></div>
+				<!-- <div class="datagrid-btn-separator"></div> -->
 				<div style="float: left;">
-					<a href="#" class="easyui-linkbutton" plain="true" icon="icon-ok"
-						onclick="endOrderWindow()">保存菜品</a>
+				<!-- <a id="afterdinner" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">保存菜品</a>  -->
+					<a id="afterdinner" href="#" class="easyui-linkbutton" plain="true" icon="icon-ok"
+						>保存菜品</a> 
 				</div>
 			</div>
 			</div>
@@ -870,11 +873,11 @@
 							<td><input type="text" name="change" readonly="true" class="easyui-validatebox"  required="true"/></td>
 						</tr> -->
 						
-						<tr>
+						<!-- <tr>
 							<td colspan="1"><a id="afterdinner" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">保存</a> </td>
 							
-						<!-- <td colspan="1"><a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">结账</a> </td> -->
-						</tr>
+						<td colspan="1"><a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">结账</a> </td>
+						</tr> -->
 						</table>
 				</form>
 			</div>

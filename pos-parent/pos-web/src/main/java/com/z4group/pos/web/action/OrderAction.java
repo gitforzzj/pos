@@ -13,7 +13,9 @@ import org.springframework.stereotype.Controller;
 
 import com.z4group.pos.domain.DinnerTable;
 import com.z4group.pos.domain.Order;
+import com.z4group.pos.domain.OrderDetail;
 import com.z4group.pos.domain.Pay;
+import com.z4group.pos.domain.User;
 import com.z4group.pos.service.IOrderService;
 import com.z4group.pos.service.IPayService;
 import com.z4group.pos.service.ITableManagerService;
@@ -31,6 +33,10 @@ public class OrderAction extends BaseAction<Order>{
 	private ITableManagerService  tableManagerService;
 	
 	private double realreceivemoney;
+	
+	private String tableid;
+	
+	
 	
 	public String NoPayOrderItem() {
 		if(model!=null&&model.getOid()!=null) {

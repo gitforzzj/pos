@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.z4group.pos.domain.DinnerTable;
 import com.z4group.pos.domain.Dish;
 import com.z4group.pos.domain.Order;
@@ -46,14 +47,13 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 	
 	private String orderdishid;
 	private String checktaste;
-	private String tableid;
 	
 	private HashMap map;
 	
 	private int time=0;
 
 	private double realreceivemoney;
-	private double ordertotalprice;
+	private double ordertotalprice=0;
 	
 	public void newOrder() throws IOException{
 		String f = "1";
@@ -178,19 +178,41 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 	
 	
 	public Order common() {
-		Order order = new Order();
-		order.setOid(UUID.randomUUID().toString());
-		order.setOrdertime(new Timestamp(System.currentTimeMillis()));
-		order.setUser((User) ServletActionContext.getRequest().getSession().getAttribute("loginUser"));
 		
-		order.setOrdertotalprice(ordertotalprice);
-		order.setDinnerTable(tableManagerService.findById(tableid));
-		orderService.add(order);
-		
-		ArrayList<OrderDetail> list= (ArrayList<OrderDetail>)  ServletActionContext.getRequest()
+		ActionContext actionContext = ActionContext.getContext();  
+        Map session = actionContext.getSession();  
+        String tableid = (String) session.get("savetableId"); 
+        String oid = (String) session.get(tableid); 
+        session.put("savetableId", null);
+        ArrayList<OrderDetail> list= (ArrayList<OrderDetail>)  ServletActionContext.getRequest()
 				.getSession().getAttribute("orderDetailList");
+        //计算总单价
+        for (OrderDetail orderDetail: list) {
+        	ordertotalprice=ordertotalprice+orderDetail.getTotalprice();
+        }
+        Order order =null;
+        if(oid!=null&&!oid.equals("")) {
+        	 order = orderService.findById(oid);
+        	 order.setOrdertotalprice(ordertotalprice+order.getOrdertotalprice());
+        	 order.setUser((User) ServletActionContext.getRequest().getSession().getAttribute("loginUser"));
+        	 orderService.update(order);
+        }else {
+        	order = new Order();
+        	order.setOid(UUID.randomUUID().toString());
+    		order.setOrdertime(new Timestamp(System.currentTimeMillis()));
+    		order.setUser((User) ServletActionContext.getRequest().getSession().getAttribute("loginUser"));
+    		
+    		order.setOrdertotalprice(ordertotalprice);
+    		order.setDinnerTable(tableManagerService.findById(tableid));
+    		orderService.add(order);
+        }
+		
+		
+		
+		
 		for (OrderDetail orderDetail: list) {
 			orderDetail.setItemid(UUID.randomUUID().toString());
+			
 			orderDetail.setOrder(order);
 			orderDetailService.add(orderDetail);
 		}
@@ -307,11 +329,5 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 		this.checktaste = checktaste;
 	}
 
-	public String getTableid() {
-		return tableid;
-	}
 
-	public void setTableid(String tableid) {
-		this.tableid = tableid;
-	}
 }

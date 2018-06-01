@@ -13,15 +13,16 @@
         <property name="tableNo" type="integer">
             <column name="tableNo" not-null="true" />
         </property>
+        <property name="seatnum" type="integer">
+            <column name="seatnum" />
+        </property>
         <property name="tableStatus" type="integer">
             <column name="tableStatus" not-null="true" />
         </property>
         <property name="orderTime" type="timestamp">
             <column name="orderTime" length="19" />
         </property>
-        <property name="seatnum" type="integer">
-            <column name="seatnum" />
-        </property>
+       
         <set name="orders" inverse="true">
             <key>
                 <column name="tableid" length="50" />

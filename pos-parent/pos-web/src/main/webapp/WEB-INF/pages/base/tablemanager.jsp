@@ -36,6 +36,7 @@
 		$('#grid').datagrid('selectRow', index);  
 	   	 var rows = $("#grid").datagrid("getSelections");
 	   	 var id = rows[0].id;
+	   	 
 	   	 if(rows.length == 1){
 	   	
 	           	 $.post('tableManagerAction_add.action',{"id":id},function(data){
@@ -54,12 +55,27 @@
 	
 	function orderDish(index){
 		//判断“系统管理”选项卡是否存在
-		
+		$('#grid').datagrid('selectRow', index);  
+	   	 var rows = $("#grid").datagrid("getSelections");
+	   	 var id = rows[0].id;
+	   	var oid = rows[0].orderNo;
+	   	alert(oid);
+	   	 //保存餐台的id
+	   	$.post('tableManagerAction_saveTableId.action',{"id":id,"oid":oid},function(data){});
+	   	 //点菜创建新单
+	   	 if(oid!=null){
+	   		$.post('orderDetailAction_newOrder.action',function(data){});
+	   	 }
+	   
+	   	
 		var e = self.parent.$("#tabs").tabs("exists","点菜");
 		if(e){
 			//已经存在，选中就可以
 			self.parent.$("#tabs").tabs("select","点菜");
-		}else{
+			  var tab=self.parent.$('#tabs').tabs('getSelected');//获取当前选中tabs  
+			    var index = self.parent.$('#tabs').tabs('getTabIndex',tab);//获取当前选中tabs的index  
+			    self.parent.$('#tabs').tabs('close',index);//关闭对应index的tabs  
+		}
 			//调用tabs对象的add方法动态添加一个选项卡
 			self.parent.$("#tabs").tabs("add",{
 				title:'点菜',
@@ -67,7 +83,7 @@
 				closable:true,
 				content:'<iframe frameborder="0" height="100%" width="100%" src="page_base_ordering.action"></iframe>'
 			});
-		}
+		
 	}
 
 	function cleantable(index){
@@ -166,10 +182,10 @@
 	
 	
 		  function doSearch(value,name){ //用户输入用户名,点击搜素,触发此函数  
-			  var dishid=$("input[name=searchtype]").val();
+			  var seatnum=$("input[name=searchtype]").val();
 			 	 /* var p=$("#searchtype").serializeJson();
 				console.info(p); */
-				$("#grid").datagrid("load",{"dishid":dishid});/* 
+				$("#grid").datagrid("load",{"seatnum":seatnum});/* 
 				$("#searchWindow").window("close"); */
 		           
 		    }  
@@ -227,7 +243,7 @@
 		align : 'center',
 		formatter : function(data,row,index){ 
 			if(row.tableStatus=="2"){
-				var str = '<a href="#"  name="paymoney" class="easyui-linkbutton" onclick="endOrderWindow('+index+')"></a>';  
+				var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a>  <a href="#"  name="paymoney" class="easyui-linkbutton" onclick="endOrderWindow('+index+')"></a>';  
 			      return str;  
 			}else if(row.tableStatus=="1"){
 				var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a>';  
@@ -463,22 +479,27 @@
 		});
 		
 		window.top["Refresh_CloudHomePage_Content"] = function () {
-		　　　window.location.reload();
+		　	　window.location.reload();
 		　　}; 
 		
 		$('#category').combobox({ 
 
-			url:'categoryAction_findAll.action', 
+			url:'tableManagerAction_findAll.action', 
 
-			valueField:'id', 
+			valueField:'tableStatus', 
 
-			textField:'name',
+			textField:'tableStatusName',
 			
 			onSelect: function (data) {
-				$('#grid').datagrid( {
+				
+				  var seatnum=$("input[name=searchtype]").val();
+				 	 /* var p=$("#searchtype").serializeJson();
+					console.info(p); */
+					$("#grid").datagrid("load",{"seatnum":seatnum,"tableStatus":data.id});/* 
+				/* $('#grid').datagrid( {
 	                url: "dishAction_findByCategoryId.action?category.id="+data.id
 				
-				});
+				}); */
 			}
 		});
 		
@@ -570,7 +591,7 @@
 				style="border-bottom: 25px solid #fafafa; padding: 2px 5px; background: #fafafa;">
 
 				<div id="tb" style="float: left;">
-					<input id="searchtype" name="searchtype" class="easyui-searchbox" prompt="输入菜单编号"
+					<input id="searchtype" name="searchtype" class="easyui-searchbox" prompt="输入就餐人数"
 						searcher="doSearch" style="width: 180px; vertical-align: middle;"></input>
 				</div>
 
@@ -579,8 +600,8 @@
 			
 
 				<div style="float: left;">
-					<font color="blue">选择类别:</font> <input id="category"
-						name="category" value="全部分类">
+					<font color="blue">选择餐桌状态:</font> <input id="category"
+						name="category" value="全部">
 				</div>
 				
 			</div>
