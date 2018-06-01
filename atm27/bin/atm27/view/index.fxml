@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="indexBP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="atm27.controller.IndexController">
+   <top>
+      <Label text="ATM" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="28.0" />
+         </font>
+         <padding>
+            <Insets top="30.0" />
+         </padding>
+      </Label>
+   </top>
+   <left>
+      <VBox alignment="CENTER" prefHeight="333.0" prefWidth="143.0" spacing="30.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button disable="true" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" text="存款">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <Button fx:id="withdrawBt" mnemonicParsing="false" onAction="#withdraw" prefHeight="40.0" prefWidth="100.0" text="取款">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <Button fx:id="selectCashBt" disable="true"  mnemonicParsing="false" onAction="#selectCash" prefHeight="40.0" prefWidth="100.0" text="余额查询">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+   </left>
+   <right>
+      <VBox alignment="CENTER" prefHeight="333.0" prefWidth="138.0" spacing="30.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button disable="true" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" text="修改密码">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <Button disable="true" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" text="转账">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+            <Button fx:id="exit" mnemonicParsing="false" onAction="#exit" prefHeight="40.0" prefWidth="100.0" text="退出">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+   </right>
+   <center>
+      <Label alignment="TOP_CENTER" text="请选择交易类型" BorderPane.alignment="TOP_CENTER">
+         <font>
+            <Font size="28.0" />
+         </font>
+         <BorderPane.margin>
+            <Insets top="50.0" />
+         </BorderPane.margin>
+      </Label>
+   </center>
+</BorderPane>
