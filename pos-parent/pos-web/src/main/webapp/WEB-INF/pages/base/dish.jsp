@@ -88,55 +88,9 @@
 	}
 	
 		  function doSearch(value,name){ //用户输入用户名,点击搜素,触发此函数
-
-			  
-				$("body").css({visibility:"visible"});
-				
-				// 收派标准数据表格
-				$('#grid').datagrid( {
-					/////////
-							title:'searchBox',  
-				            iconCls:'icon-ok',  
-				            pageList:[1,10,15,20],  
-				            nowrap:true,  
-				            striped:true,  
-				            collapsible:true,  
-				            toolbar:"#easyui_toolbar",  
-				            url:'dishAction_page.action?dishid='+value, //触发此action,带上参数searcValue   
-				            loadMsg:'数据加载中......',  
-				            fitColumns:true,//允许表格自动缩放,以适应父容器  
-				            sortName:'userId',  
-				            sortOrder:'asc',  
-				            remoteSort:false,  
-				            columns : columns,  
-				            pagination : true,  
-				            fit:true,
-				            rownumbers : true ,
-				            border : true,
-					/* /////
-					iconCls : 'icon-forward',
-					fit : true,
-					border : true,
-					rownumbers : true,
-					striped : true,
-					pageList: [30,50,100],
-					pagination : true,
-					toolbar : toolbar,
-					url :  "dishAction_pageQuery.action",
-					idField : 'id',
-					columns : columns, */
-					onDblClickRow : doDblClickRow,
-					onAfterEdit : function(rowIndex, rowData, changes){
-						/* console.info(rowData); */
-						editIndex = undefined;
-						$.post('dishAction_saveOrUpdate.action',rowData,function(data){
-							if(data == 0){
-								$.messager.alert("提示信息","工作单录入失败!","error");
-							}
-						});
-					}
-				});
-			  
+			  var dishid=$("input[name=searchtype]").val();
+			  alert(dishid);
+			  $("#grid").datagrid("load",{"dishid":dishid});
 			  
 		       
 		    }  
@@ -339,10 +293,7 @@
 			textField:'name',
 			
 			onSelect: function (data) {
-				$('#grid').datagrid( {
-	                url: "dishAction_findByCategoryId.action?category.id="+data.id
-				
-				});
+				$("#grid").datagrid("load",{"category.id":data.id});
 			}
 		});
 		
@@ -407,7 +358,7 @@
                 style="border-bottom: 1px solid #ddd; height: 32px; padding: 2px 5px; background: #fafafa;">  
                 
                 <div id="tb" style="float: left;">  
-                    <input id="searchtype"  class="easyui-searchbox"  prompt="输入菜单编号"  searcher="doSearch" style="width: 180px; vertical-align: middle;"></input>   
+                    <input id="searchtype" name="searchtype"  class="easyui-searchbox"  prompt="输入菜单编号"  searcher="doSearch" style="width: 180px; vertical-align: middle;"></input>   
                 </div>  
                 <div class="datagrid-btn-separator"></div>  
                 <div style="float: left;">  
