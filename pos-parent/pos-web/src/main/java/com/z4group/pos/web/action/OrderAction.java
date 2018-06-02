@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.struts2.ServletActionContext;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -37,7 +40,9 @@ public class OrderAction extends BaseAction<Order>{
 	
 	private String tableid;
 	
-	
+	private String firsttime;
+	private String secondtime;
+	private Integer payStatus;
 	
 	public String NoPayOrderItem() {
 		if(model!=null&&model.getOid()!=null) {
@@ -51,6 +56,46 @@ public class OrderAction extends BaseAction<Order>{
 		}
 		return NONE;
 	}
+	
+	public String pageQuery() {
+		DetachedCriteria dc = pageBean.getDetachedCriteria();
+		//string->timestamp
+		Timestamp ts1 = new Timestamp(System.currentTimeMillis());  
+		Timestamp ts2 = new Timestamp(System.currentTimeMillis()); 
+		if(firsttime!=null&&secondtime!=null) {
+			if(!firsttime.equals("")&&!secondtime.equals("")) {
+				 ts1 = Timestamp.valueOf(firsttime);  
+				 ts2 = Timestamp.valueOf(secondtime);  
+				dc.add(Restrictions.between("ordertime", ts1, ts2));
+			}else if(firsttime.equals("")&&!secondtime.equals("")) {
+				ts2 = Timestamp.valueOf(secondtime);  
+				dc.add(Restrictions.lt("ordertime",ts2));
+			}else if(!firsttime.equals("")&&secondtime.equals("")) {
+				ts1 = Timestamp.valueOf(firsttime); 
+				dc.add(Restrictions.gt("ordertime", ts1));
+			}
+		}
+
+		if(payStatus!=null) {
+			if(payStatus==0) {
+				
+				dc.add(Restrictions.isNull("pay"));
+			}else  if(payStatus==1) {
+				dc.createAlias("pay", "p");   
+				dc.add(Restrictions.eq("p.paystatus", payStatus));
+			}
+			
+		}
+		 
+		
+		dc.addOrder(org.hibernate.criterion.Order.desc("ordertime"));
+		orderService.pageQuery(pageBean);/*
+		ActionContext.getContext().getSession().put("dirId", null);*/
+		//将返回的list集合转为json对象
+		this.java2json(pageBean, new String[] {"orderDetails","orders","roles","tableStatus"});
+		return NONE;
+	}
+	
 	
 	public void endOrder() throws IOException{
 		String f = "1";
@@ -81,6 +126,32 @@ public class OrderAction extends BaseAction<Order>{
 
 	public void setRealreceivemoney(double realreceivemoney) {
 		this.realreceivemoney = realreceivemoney;
+	}
+
+	public Integer getPayStatus() {
+		return payStatus;
+	}
+
+	
+
+	public void setPayStatus(Integer payStatus) {
+		this.payStatus = payStatus;
+	}
+
+	public String getFirsttime() {
+		return firsttime;
+	}
+
+	public String getSecondtime() {
+		return secondtime;
+	}
+
+	public void setFirsttime(String firsttime) {
+		this.firsttime = firsttime;
+	}
+
+	public void setSecondtime(String secondtime) {
+		this.secondtime = secondtime;
 	}
 
 

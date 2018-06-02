@@ -14,6 +14,7 @@ public class Pay implements java.io.Serializable {
 
 	private String id;
 	private Date paytime;
+	//0代表未支付，1代表已支付
 	private Integer paystatus;
 	private Integer paymethod;
 	private double realreceivemoney;

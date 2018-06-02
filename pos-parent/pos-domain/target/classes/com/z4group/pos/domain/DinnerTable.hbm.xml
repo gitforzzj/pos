@@ -22,7 +22,10 @@
         <property name="orderTime" type="timestamp">
             <column name="orderTime" length="19" />
         </property>
-        <set lazy="false" name="orders" inverse="true">
+        <property name="orderNo" type="string">
+            <column name="orderNo" length="50" />
+        </property>
+        <set name="orders" inverse="true">
             <key>
                 <column name="tableid" length="50" />
             </key>

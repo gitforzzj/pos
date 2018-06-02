@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.z4group.pos.domain.DinnerTable;
 import com.z4group.pos.domain.Order;
+import com.z4group.pos.utils.PageBean;
 
 public interface IOrderService {
 
@@ -12,5 +13,7 @@ public interface IOrderService {
 	void update(Order order);
 
 	Order findById(String oid);
+
+	void pageQuery(PageBean pageBean);
 
 }

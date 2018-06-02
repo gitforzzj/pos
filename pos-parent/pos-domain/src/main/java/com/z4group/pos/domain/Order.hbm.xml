@@ -10,13 +10,13 @@
             <column name="oid" length="50" />
             <generator class="assigned" />
         </id>
-        <many-to-one name="dinnerTable" class="com.z4group.pos.domain.DinnerTable" fetch="select">
+        <many-to-one lazy="false" name="dinnerTable" class="com.z4group.pos.domain.DinnerTable" fetch="select">
             <column name="tableid" length="50" />
         </many-to-one>
-        <many-to-one name="pay" class="com.z4group.pos.domain.Pay" fetch="select">
+        <many-to-one lazy="false" name="pay" class="com.z4group.pos.domain.Pay" fetch="select">
             <column name="payid" length="50" />
         </many-to-one>
-        <many-to-one name="user" class="com.z4group.pos.domain.User" fetch="select">
+        <many-to-one lazy="false" name="user" class="com.z4group.pos.domain.User" fetch="select">
             <column name="userid" length="32" not-null="true" />
         </many-to-one>
         <property name="ordertime" type="timestamp">

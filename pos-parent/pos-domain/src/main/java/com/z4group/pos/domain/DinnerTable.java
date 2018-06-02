@@ -3,11 +3,8 @@ package com.z4group.pos.domain;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.struts2.ServletActionContext;
 
 /**
  * DinnerTable entity. @author MyEclipse Persistence Tools
@@ -22,25 +19,11 @@ public class DinnerTable implements java.io.Serializable {
 	private Integer tableNo;
 	private Integer seatnum;
 	private Date orderTime;
+	private String orderNo;
 	private Set orders = new HashSet(0);
 
-	
-	
-	public String getOrderNo() {
-		if(tableStatus!=null&&!tableStatus.equals("")) {
-			if(tableStatus.getStatusid()==2||tableStatus.getStatusid()==3) {
-				 HashMap map = (HashMap) ServletActionContext.getRequest().getSession().getAttribute("map");
-				 if(map!=null) {
-					 String  orderNo = (String) map.get(orderTime);
-					 return orderNo;
-				 }
-				 
-			}
-		}
-		
-		
-		return null;
-	}
+	// Constructors
+
 	public String getTableOrderTime() {
 		 DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 		 if(orderTime!=null) {
@@ -51,8 +34,6 @@ public class DinnerTable implements java.io.Serializable {
 		 return null;
 	}
 	
-	// Constructors
-
 	/** default constructor */
 	public DinnerTable() {
 	}
@@ -65,12 +46,13 @@ public class DinnerTable implements java.io.Serializable {
 
 	/** full constructor */
 	public DinnerTable(String id, TableStatus tableStatus, Integer tableNo, Integer seatnum, Date orderTime,
-			Set orders) {
+			String orderNo, Set orders) {
 		this.id = id;
 		this.tableStatus = tableStatus;
 		this.tableNo = tableNo;
 		this.seatnum = seatnum;
 		this.orderTime = orderTime;
+		this.orderNo = orderNo;
 		this.orders = orders;
 	}
 
@@ -114,6 +96,14 @@ public class DinnerTable implements java.io.Serializable {
 
 	public void setOrderTime(Date orderTime) {
 		this.orderTime = orderTime;
+	}
+
+	public String getOrderNo() {
+		return this.orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
 	}
 
 	public Set getOrders() {

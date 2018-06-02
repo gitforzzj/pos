@@ -89,7 +89,6 @@
 	
 		  function doSearch(value,name){ //用户输入用户名,点击搜素,触发此函数
 			  var dishid=$("input[name=searchtype]").val();
-			  alert(dishid);
 			  $("#grid").datagrid("load",{"dishid":dishid});
 			  
 		       

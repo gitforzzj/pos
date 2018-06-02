@@ -1,5 +1,7 @@
 package com.z4group.pos.domain;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +24,35 @@ public class Order implements java.io.Serializable {
 
 	// Constructors
 
+	public String getUserName() {
+		if(user!=null) {
+			return user.getUsername();
+		}
+		 return null;
+	} 
+	public String getTableNo() {
+		if(dinnerTable!=null) {
+			return dinnerTable.getTableNo()+"";
+		}
+		 return null;
+	} 
+	
+	public String getPayStatus() {
+		if(pay!=null) {
+			return pay.getPaystatus()+"";
+		}
+		 return "0";
+	} 
+	public String getOrdertimestamp() {
+		 DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+		 if(ordertime!=null) {
+
+			 String ordertimestamp = sdf.format(this.ordertime); 
+			 return ordertimestamp;
+		 }
+		 return null;
+	}
+	
 	/** default constructor */
 	public Order() {
 	}

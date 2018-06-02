@@ -29,5 +29,27 @@ public class OrderDetailServiceImpl implements IOrderDetailService{
 	public void pageQuery(PageBean pageBean, ArrayList list) {
 		orderDetailDao.pageQuery(pageBean,list);
 	}
+
+
+	@Override
+	public OrderDetail findById(String itemid) {
+		// TODO Auto-generated method stub
+		return orderDetailDao.findById(itemid);
+	}
+
+
+	@Override
+	public void update(OrderDetail orderDetail) {
+		// TODO Auto-generated method stub
+		orderDetailDao.update(orderDetail);
+		
+	}
+
+
+	@Override
+	public void deleteById(String itemid) {
+		// TODO Auto-generated method stub
+		orderDetailDao.deleteById(itemid);
+	}
 	
 }

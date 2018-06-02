@@ -124,6 +124,7 @@ public class TableManagerAction extends BaseAction<DinnerTable> {
 		try {
 		
 			DinnerTable table = tableManagerService.findById(model.getId());
+			table.setOrders(null);
 				table.setOrderTime(null);
 				table.setTableStatus(tableStatusService.findById(1));;
 				tableManagerService.update(table);

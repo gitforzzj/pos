@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.z4group.pos.dao.IOrderDao;
 import com.z4group.pos.domain.Order;
 import com.z4group.pos.service.IOrderService;
+import com.z4group.pos.utils.PageBean;
 
 @Service
 @Transactional
@@ -33,5 +34,12 @@ public class OrderServiceImpl  implements IOrderService{
 	public Order findById(String oid) {
 		// TODO Auto-generated method stub
 		return orderDao.findById(oid);
+	}
+
+
+	@Override
+	public void pageQuery(PageBean pageBean) {
+		// TODO Auto-generated method stub
+		orderDao.pageQuery(pageBean);
 	}
 }

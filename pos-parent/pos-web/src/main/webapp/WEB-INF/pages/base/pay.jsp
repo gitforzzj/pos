@@ -30,115 +30,32 @@
 	src="${pageContext.request.contextPath }/js/jquery.ocupload-1.1.2.js"></script>
 <script type="text/javascript">
 	var tablestatusid;
-	
-	function doAdd(index){
-		//获得选中的行对象
-		$('#grid').datagrid('selectRow', index);  
-	   	 var rows = $("#grid").datagrid("getSelections");
-	   	 var id = rows[0].id;
-	   	 
-	   	 if(rows.length == 1){
-	   	
-	           	 $.post('tableManagerAction_add.action',{"id":id},function(data){
-	       				if(data == -1){
-	       					$.messager.alert("提示信息","开桌失败!","error");
-	       					
-	       				}
-	       					$("#grid").datagrid("load");
-	       		});
-	   		
-	   	} else{
-	   		$.messager.alert("提示信息","请选择一行!","warning");
-	   	}
-			
-	}
-	
-	function doDelete(index){
-		$('#orderDetailGrid').datagrid('selectRow', index);  
-		var rows =$("#orderDetailGrid").datagrid("getSelections");
-		
-		if(rows.length==1){
-			var orderid=$("input[name=oid]").val();
-			var itemid = rows[0].itemid;
-			$.post('orderDetailAction_delDB.action',{"itemid":itemid,"orderid":orderid},function(data){
-				 if(data == 1){
-					$("#orderDetailGrid").datagrid("load");
-					$("#grid").datagrid("load");
-				} else{
-
-					$.messager.alert("提示信息","菜品移除失败!","error");
-				}
-			});
-		}else{
-			$.messager.alert("提示信息","请选择一行!","warning");
-		}
-	}
-	
-	function orderDish(index){
-		//判断“系统管理”选项卡是否存在
-		$('#grid').datagrid('selectRow', index);  
-	   	 var rows = $("#grid").datagrid("getSelections");
-	   	 var id = rows[0].id;
-	   	var oid = rows[0].orderNo;
-	   	 //保存餐台的id
-	   	$.post('tableManagerAction_saveTableId.action',{"id":id,"oid":oid},function(data){});
-	   	 //点菜创建新单
-	   	 if(oid!=null){
-	   		$.post('orderDetailAction_newOrder.action',function(data){});
-	   	 }
-	   
-	   	
-		var e = self.parent.$("#tabs").tabs("exists","点菜");
-		if(e){
-			//已经存在，选中就可以
-			self.parent.$("#tabs").tabs("select","点菜");
-			  var tab=self.parent.$('#tabs').tabs('getSelected');//获取当前选中tabs  
-			    var index = self.parent.$('#tabs').tabs('getTabIndex',tab);//获取当前选中tabs的index  
-			    self.parent.$('#tabs').tabs('close',index);//关闭对应index的tabs  
-		}
-			//调用tabs对象的add方法动态添加一个选项卡
-			self.parent.$("#tabs").tabs("add",{
-				title:'点菜',
-				iconCls:'icon-edit',
-				closable:true,
-				content:'<iframe frameborder="0" height="100%" width="100%" src="page_base_ordering.action"></iframe>'
-			});
-		
-	}
-
-	function cleantable(index){
-		//获得选中的行对象
-		$('#grid').datagrid('selectRow', index);  
-	   	 var rows = $("#grid").datagrid("getSelections");
-	   	 var id = rows[0].id;
-	   	 if(rows.length == 1){
-	   	
-	           	 $.post('tableManagerAction_cleanTable.action',{"id":id},function(data){
-	       				if(data == -1){
-	       					$.messager.alert("提示信息","清桌失败!","error");
-	       					
-	       				}
-	       					$("#grid").datagrid("load");
-	       		});
-	   		
-	   	} else{
-	   		$.messager.alert("提示信息","请选择一行!","warning");
-	   	}
-			
-	}
-	
 
 	function endOrderWindow(index){
 		
 		//获得选中的行对象
 		$('#grid').datagrid('selectRow', index);  
 	   	 var rows = $("#grid").datagrid("getSelections");
-	   	 var id = rows[0].id;
+	   	 var oid = rows[0].oid;
 	   	 if(rows.length == 1){
 	   			$('#endOrderWindow').window("open");
 	   			$("input[name=tableid]").val(rows[0].tableNo);
 	   			$("input[name=oid]").val(rows[0].orderNo);
-	   			 $("#orderDetailGrid").datagrid("load",{"oid":rows[0].orderNo});
+	   			///////
+	   			if(rows[0].pay!=null){
+	   				$("input[name=realreceivemoney]").val(rows[0].pay.realreceivemoney);
+		   			$("input[name=change]").val(rows[0].pay.paychange);
+	   			}else{
+	   				$("input[name=realreceivemoney]").val(null);
+		   			$("input[name=change]").val(null);
+	   			}
+	   			if(rows[0].pay!=null){
+	   				$("#btntohidden").hide();
+	   			}else{
+	   				$("#btntohidden").show();
+	   			}
+	   			
+	   			 $("#orderDetailGrid").datagrid("load",{"oid":rows[0].oid});
 	   			
 	   			/*
 	   			$("input[name=tableid]").val(rows[0].tableNo);
@@ -162,13 +79,8 @@
 		$('#editOrderWindow').window("open");
 		$('#orderDetailGrid').datagrid('selectRow', index);  
 		var rows =$("#orderDetailGrid").datagrid("getSelections");
-		//获取oid的值
-		var oid=$("input[name=oid]").val();
-		//在把oid负责到修改框上
-		$("input[name=orderid]").val(oid);
-		//在把itemid负责到修改框上
-		$("input[name=itemid]").val(rows[0].itemid);
 		$("input[name=orderdishid]").val(rows[0].dishes.dishid);
+		
 		$("input[name=editdishname]").val(rows[0].dishes.dishname);
 		$("input[name=num]").val(rows[0].num);
 		$("input[name=checktaste]").val(rows[0].taste);
@@ -206,19 +118,7 @@
 	
 	
 	
-		  function doSearch(value,name){ //用户输入用户名,点击搜素,触发此函数  
-			  var seatnum=$("input[name=searchtype]").val();
-		  	  if(seatnum=="输入就餐人数"){
-		  		seatnum=0;
-		  	  }
-			 	 /* var p=$("#searchtype").serializeJson();
-				console.info(p); */
-		  	
-			$("#grid").datagrid("load",{"seatnum":seatnum,"statusid":tablestatusid});
-				/* 
-				$("#searchWindow").window("close"); */
-		           
-		    }  
+		
 		
    
 		  
@@ -227,9 +127,9 @@
 	var toolbar ='#easyui_toolbar'; 
 	// 定义列
 	var columns = [ [ {
-		field : 'tableNo',
-		title : '餐桌号',
-		width : 120,
+		field : 'oid',
+		title : '订单号',
+		width : 180,
 		align : 'center',
 		/* editor :{
 			type : 'validatebox',
@@ -238,65 +138,96 @@
 			}
 		}  */
 	}, {
-		field : 'seatnum',
-		title : '座位',
+		field : 'ordertimestamp',
+		title : '订单时间',
 		width : 120,
 		align : 'center',
 		
 	}, {
-		field : 'tableStatusName',
-		title : '餐桌状态',
-		width : 120,
-		formatter : function(data,row, index){
+		field : 'ordertotalprice',
+		title : '总价',
+		width : 90,
+		/* formatter : function(data,row, index){
 			if(row.tableStatus==null){
 				return "空闲";
 			}else{
 				return row.tableStatus.statusName;
 			}
 			
-		},
+		}, */
 		align : 'center',
 		
 	} , {
-		field : 'orderNo',
-		title : '订单号',
+		field : 'tableNo',
+		title : '桌号',
+		width : 90,
+		align : 'center'
+	},{
+		field : 'userName',
+		title : '操作人员',
 		width : 120,
 		align : 'center'
 	},{
-		field : 'tableOrderTime',
-		title : '开桌时间',
+		field : 'hiddenchange',
+		title : '单位',
+		hidden:'true',
 		width : 120,
-		align : 'center'
+		align : 'center',
+		formatter : function(data, row, index) {
+			if(row.pay!=null){
+				return row.pay.paychange;
+			}
+			return null;
+		}
+		
+	}, {
+		field : 'hiddenmoney',
+		title : '单位', 
+		hidden:'true', 
+		width : 120,
+		align : 'center',
+		formatter : function(data, row, index) {
+			if(row.pay!=null){
+				return row.pay.realreceivemoney;
+			}
+			return null;
+			
+		}
+		
+	}, {
+		field : 'payStatus',
+		title : '支付状态',
+		width : 120,
+		align : 'center',
+			formatter : function(data,row,index){ 
+				
+				if(data==1){
+					return "已支付";
+				}else
+					return "未支付";
+			
+		}
 	},{  
 		field : 'aaa',
-		title : '操作',
+		title : '订单项',
 		width : 120,
 		align : 'center',
 		formatter : function(data,row,index){ 
-			if(row.tableStatus==null){
-				var str = '<a href="#"  name="opera" class="easyui-linkbutton" onclick="doAdd('+index+')"></a>';  
-			      return str; 
-			}else{
-				if(row.tableStatus.statusid=="3"){
-					var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a>  <a href="#"  name="paymoney" class="easyui-linkbutton" onclick="endOrderWindow('+index+')"></a>';  
-				      return str;  
-				}else if(row.tableStatus.statusid=="2"){
-					var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a>';  
-				      return str;  
-				    
-				}else if(row.tableStatus.statusid=="1"){
-					var str = '<a href="#"  name="opera" class="easyui-linkbutton" onclick="doAdd('+index+')"></a>';  
+				if(row.pay!=null){
+					var str = '<a href="#"  name="selectpaymoney" class="easyui-linkbutton" onclick="endOrderWindow('+index+')"></a>';  
 				      return str;  
 				}else{
-					var str = '<a href="#"  name="cleantable" class="easyui-linkbutton" onclick="cleantable('+index+')"></a>';  
-				      return str;  
+					var str = '<a href="#"  name="paymoney" class="easyui-linkbutton" onclick="endOrderWindow('+index+')"></a>';  
+				      return str; 
 				}
+					
+				
 			}
 			
 			 
 			}
 		
-	}
+	
 	
 		] 
 	];
@@ -409,6 +340,7 @@
 		},{  
 			field : 'ccc',
 			title : '操作1',
+			hidden:true,
 			width : 120,
 			align : 'center',
 			formatter : function(val,row,index){ 
@@ -418,6 +350,7 @@
 			},{  
 				field : 'bbb',
 				title : '操作2',
+				hidden:true,
 				width : 120,
 				align : 'center',
 				formatter : function(val,row,index){ 
@@ -438,12 +371,12 @@
 			/////////
 			title:'菜单大全',  
 		            iconCls:'icon-ok',  
-		            pageList:[1,10,15,20],  
+		            pageList:[5,10,15,20],  
 		            nowrap:true,  
 		            striped:true,  
 		            collapsible:true,  
 		            toolbar:"#easyui_toolbar",  
-		            url:"tableManagerAction_pageQuery.action", //触发此action,带上参数searcValue  
+		            url:"orderAction_pageQuery.action", //触发此action,带上参数searcValue  
 		            loadMsg:'数据加载中......',  
 		            fitColumns:true,//允许表格自动缩放,以适应父容器  
 		            sortName:'userId',  
@@ -460,10 +393,8 @@
 			
 			
 			onLoadSuccess:function(data){  
-			    $("a[name='opera']").linkbutton({text:'开桌',plain:true,iconCls:'icon-add'});  
-			    $("a[name='paymoney']").linkbutton({text:'结账',plain:true,iconCls:'icon-ok'}); 
-			    $("a[name='cleantable']").linkbutton({text:'清桌',plain:true,iconCls:'icon-cancel'}); 
-			    $("a[name='orderdish']").linkbutton({text:'点菜',plain:true,iconCls:'icon-edit'}); 
+			    $("a[name='paymoney']").linkbutton({text:'订单项',plain:true,iconCls:'icon-cancel'}); 
+			    $("a[name='selectpaymoney']").linkbutton({text:'订单项',plain:true,iconCls:'icon-ok'}); 
 			},
 			onAfterEdit : function(rowIndex, rowData, changes){
 				/* console.info(rowData); */
@@ -483,7 +414,7 @@
 			/////////
 					title:'已点菜单',  
 		            iconCls:'icon-ok',  
-		            pageList:[1,10,15,20],  
+		            pageList:[5,10,15,20],  
 		            nowrap:true,  
 		            striped:true,  
 		            collapsible:true,  /* 
@@ -519,36 +450,17 @@
 		　	　window.location.reload();
 		　　}; 
 		
-		// 修改区域窗口
-		$('#editOrderWindow').window({
-	        title: '结账',
-	        width: 400,
-	        modal: true,
-	        shadow: true,
-	        closed: true,
-	        height: 400,
-	        resizable:false
-	    });
-		
 		$('#category').combobox({ 
 
-			url:'tableStatusAction_findAll.action', 
+			url:'${pageContext.request.contextPath }/json/combobox_payStatus.json', 
 
-			valueField:'statusid', 
+			valueField:'id', 
 
-			textField:'statusName',
+			textField:'name',
 			
 			onSelect: function (data) {
-				
-				  var seatnum=$("input[name=searchtype]").val();
-				 	 /* var p=$("#searchtype").serializeJson();
-					console.info(p); */
-					
-					if(seatnum=='输入就餐人数'){
-						seatnum=0;
-					}
-					tablestatusid=data.statusid;
-					$("#grid").datagrid("load",{"seatnum":seatnum,"statusid":data.statusid});/* 
+				$("input[name=payStatus]").val(data.id);
+				/* $("#grid").datagrid("load",{"category.id":data.id}); */
 				/* $('#grid').datagrid( {
 	                url: "dishAction_findByCategoryId.action?category.id="+data.id
 				
@@ -556,12 +468,22 @@
 			}
 		});
 		
-		
+		$("#searchbutton").click(function(){
+			   var firsttime = $("#firstdatetime").datetimebox('getValue');
+			    var secondtime = $("#seconddatetime").datetimebox('getValue');
+			    
+			    var payStatus=$("input[name=payStatus]").val();
+			    if(payStatus=="全部"){
+			    	payStatus=-1;
+			    }
+			    
+			    $("#grid").datagrid("load",{"firsttime":firsttime,"secondtime":secondtime,"payStatus":payStatus});
+		}); 
 		
 		// 结账区域窗口
 		$('#endOrderWindow').window({
 	        title: '结账',
-	        width: 1000,
+	        width: 900,
 	        modal: true,
 	        shadow: true,
 	        closed: true,
@@ -643,18 +565,24 @@
 				style="border-bottom: 25px solid #fafafa; padding: 2px 5px; background: #fafafa;">
 
 				<div id="tb" style="float: left;">
-					<input id="searchtype" name="searchtype" class="easyui-searchbox" prompt="输入就餐人数"
-						searcher="doSearch" style="width: 180px; vertical-align: middle;"></input>
+					<input id="firstdatetime" class="easyui-datetimebox"> -- <input id="seconddatetime" class="easyui-datetimebox">
+						
 				</div>
 
-				<div class="datagrid-btn-separator"></div>
-
-			
-
-				<div style="float: left;">
-					<font color="blue">选择餐桌状态:</font> <input id="category"
-						name="category" value="全部">
+				<div style="float: left; margin-left:20px;">
+					<font color="blue">选择支付状态:</font> 
+					<!-- <select id="paycombobox" class="easyui-combobox" name="payStatus" style="width:100px;">
+					    <option value="0">全部</option>
+					    <option value="-1">未支付</option>
+					    <option value="1">已支付</option>
+					</select> -->
+					<input id="category"
+						name="payStatus" value="全部" style="width:100px;margin-right:20px;">
+					
 				</div>
+				 <div  style="float: left;">
+					<a  id="searchbutton" href="#" class="easyui-linkbutton" plain="true" icon="icon-search" >查询</a> 
+				</div> 
 				
 			</div>
 			</div>
@@ -696,8 +624,9 @@
 							<td>找零</td>
 							<td><input type="text" name="change" readonly="true" class="easyui-validatebox"  data-options="validType:'integer'"/></td>
 						</tr>
-						<tr>
-							<td colspan="2"><a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">结账</a> </td>
+						<tr id="btntohidden">
+							
+							<td ><a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">结账</a> </td>
 						</tr>
 						<!-- <script type="text/javascript">
 									$(function(){
@@ -714,61 +643,6 @@
 				</form>
 			</div>
 	</div>
-	
-	<div class="easyui-window" title="菜单修改" id="editOrderWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
-		<div region="center" style="overflow:auto;padding:5px;" border="false">
-				
-				<form id="editOrderForm" action="regionAction_edit.action" method="post">
-					<table class="table-edit" width="80%" align="center">
-					<input type="hidden" name="orderdishid"/>
-					<input type="hidden" name="itemid">
-					<input type="hidden" name="orderid"/>
-						<tr class="title">
-							<td colspan="2">菜单修改</td>
-						</tr>
-						<tr>
-							<td>菜名</td>
-							<td><input type="text" name="editdishname" readonly="true" class="easyui-validatebox" required="true"/></td>
-						</tr>
-						<tr>
-							<td>数量</td>
-							<td><input type="text"   name="num" class="easyui-validatebox"  /></td>
-						</tr>
-						<tr>
-							<td>口味</td>
-							<input type="hidden" name="checktaste"/>
-							<td><input type="text" name="taste"  class="easyui-validatebox" required="true"/></td>
-						</tr>
-						<tr>
-							<td colspan="2"><a id="btn1" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">修改</a> </td>
-						</tr>
-						<script type="text/javascript">
-						$("#btn1").click(function(){
-							var p=$("#editOrderForm").serializeJson();
-							
-							var v=$("#editOrderForm").form("validate");
-							if(v){
-								$("#editOrderWindow").window("close");
-								$.post('orderDetailAction_editDBOrder.action',p,function(data){
-									 if(data == 1){
-										
-										$.messager.alert("提示信息","修改成功!","info");
-										 $("#orderDetailGrid").datagrid("load");
-										 $("#grid").datagrid("load");
-									} 
-									
-								}); 
-								
-							}
-						});   
-						</script>
-						
-						</table>
-				</form>
-			</div>
-	</div>
-	
-	
 	
 	 <script type="text/javascript">
 					$(function(){

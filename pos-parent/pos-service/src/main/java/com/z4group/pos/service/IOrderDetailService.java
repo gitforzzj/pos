@@ -11,4 +11,10 @@ public interface IOrderDetailService {
 
 	void pageQuery(PageBean pageBean, ArrayList list);
 
+	OrderDetail findById(String itemid);
+
+	void update(OrderDetail orderDetail);
+
+	void deleteById(String itemid);
+
 }

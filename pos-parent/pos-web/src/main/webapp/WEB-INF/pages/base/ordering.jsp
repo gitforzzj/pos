@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -550,6 +551,7 @@
 		});
 		
 		
+		 
 		//收派标准数据表格
 		$('#orderDetailGrid').datagrid( {
 			/////////
@@ -649,6 +651,7 @@
 			var v=$("#endOrderForm").form("validate"); */
 			/* if(v){ */
 				/* $("#endOrderWindow").window("close"); */
+				
 				$.post('orderDetailAction_saveOrder.action',{},function(data){
 					 if(data == 1){
 						
@@ -837,11 +840,15 @@
 						onclick="doAdd()">点菜</a>
 				</div> -->
 				<!-- <div class="datagrid-btn-separator"></div> -->
-				<div style="float: left;">
-				<!-- <a id="afterdinner" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">保存菜品</a>  -->
-					<a id="afterdinner" href="#" class="easyui-linkbutton" plain="true" icon="icon-ok"
-						>保存菜品</a> 
-				</div>
+				<s:if test="#session.savetableId!=null">
+					<div style="float: left;">
+					<!-- <a id="afterdinner" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">保存菜品</a>  -->
+					
+	
+						<a id="afterdinner" href="#" class="easyui-linkbutton" plain="true" icon="icon-ok"
+							>保存菜品</a> 
+					</div>
+				</s:if>
 			</div>
 			</div>
 			

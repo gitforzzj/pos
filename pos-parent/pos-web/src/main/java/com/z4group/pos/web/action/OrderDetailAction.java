@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.struts2.ServletActionContext;
@@ -51,7 +53,7 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 	
 	private String orderdishid;
 	private String checktaste;
-	
+	private String orderid;
 	private HashMap map;
 	
 	private int time=0;
@@ -125,7 +127,28 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 	}
 	
 	
-
+	public String delDB() throws IOException {
+		String f = "1";
+		try {
+			double total=0;
+			
+			orderDetailService.deleteById(model.getItemid());
+			Order order = orderService.findById(orderid);
+			Set<OrderDetail> orderDetails = order.getOrderDetails();
+			for (OrderDetail od : orderDetails) {
+			      total=total+od.getTotalprice();
+			}
+			order.setOrdertotalprice(total);
+			orderService.update(order);
+		}catch(Exception e){
+			e.printStackTrace();
+			f="0";
+		}
+		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
+        ServletActionContext.getResponse().getWriter().print(f);
+		return NONE;
+	}
+	
 	public String del() throws IOException {
 		String f = "1";
 		OrderDetail key=null;
@@ -142,6 +165,33 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 				}
 			}
 			list.remove(key);
+		}catch(Exception e){
+			e.printStackTrace();
+			f="0";
+		}
+		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
+        ServletActionContext.getResponse().getWriter().print(f);
+		return NONE;
+	}
+	
+	
+	
+	public String editDBOrder() throws IOException {
+		String f = "1";
+		try {
+			double total=0;
+			Order order = orderService.findById(orderid);
+			OrderDetail orderDetail = orderDetailService.findById(model.getItemid());
+			orderDetail.setNum(model.getNum());
+			orderDetail.setTaste(model.getTaste());
+			orderDetail.setTotalprice(orderDetail.getDishes().getPrice()*model.getNum());
+			orderDetailService.update(orderDetail);
+			Set<OrderDetail> orderDetails = order.getOrderDetails();
+			for (OrderDetail od : orderDetails) {
+			      total=total+od.getTotalprice();
+			}
+			order.setOrdertotalprice(total);
+			orderService.update(order);
 		}catch(Exception e){
 			e.printStackTrace();
 			f="0";
@@ -238,7 +288,7 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 		String f = "1";
 		Order order = common();
 		DinnerTable table = order.getDinnerTable();
-		
+		table.setOrderNo(order.getOid());
 		//1表示空桌，2表示开桌了但未点菜，3表示开桌且已点菜，4表示结账等待清桌
 		table.setTableStatus(tableStatusService.findById(new Integer(3)));;
 		tableManagerService.update(table);
@@ -331,6 +381,14 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 
 	public void setChecktaste(String checktaste) {
 		this.checktaste = checktaste;
+	}
+
+	public String getOrderid() {
+		return orderid;
+	}
+
+	public void setOrderid(String orderid) {
+		this.orderid = orderid;
 	}
 
 

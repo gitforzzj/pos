@@ -28,6 +28,8 @@ public class User  implements java.io.Serializable {
 
     // Constructors
 
+   
+     
     /** default constructor */
     public User() {
     }
