@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.struts2.ServletActionContext;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -50,7 +51,8 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 	@Autowired 
 	private ITableStatusService tableStatusService;
 	
-	
+	private String firsttime;
+	private String secondtime;
 	private String orderdishid;
 	private String checktaste;
 	private String orderid;
@@ -67,6 +69,31 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 		ServletActionContext.getRequest().getSession().setAttribute("orderDetailList", new ArrayList<OrderDetail>());
 		ServletActionContext.getResponse().setContentType("text/html;charset=UTF-8");
         ServletActionContext.getResponse().getWriter().print(f);
+	}
+	
+	public String pie() {
+		List<Object> list=null;
+		Timestamp ts1 = new Timestamp(System.currentTimeMillis());  
+		Timestamp ts2 = new Timestamp(System.currentTimeMillis()); 
+		if(firsttime!=null&&secondtime!=null) {
+			if(!firsttime.equals("")&&!secondtime.equals("")) {
+				 ts1 = Timestamp.valueOf(firsttime);  
+				 ts2 = Timestamp.valueOf(secondtime);  
+				 list = orderDetailService.countSaleNum(ts1,ts2);
+			}else if(firsttime.equals("")&&!secondtime.equals("")) {
+				ts2 = Timestamp.valueOf(secondtime);  
+				list = orderDetailService.countSaleNum(new Timestamp(0),ts2);
+			}else if(!firsttime.equals("")&&secondtime.equals("")) {
+				ts1 = Timestamp.valueOf(firsttime); 
+				list = orderDetailService.countSaleNum(ts1,new Timestamp(System.currentTimeMillis()));
+			}
+		}else {
+			list = orderDetailService.countSaleNum(new Timestamp(System.currentTimeMillis()-(long)30*1000*24*60*60),new Timestamp(System.currentTimeMillis()));
+			
+		}
+		
+		this.java2json(list, new String[] {});
+		return NONE;
 	}
 	
 	public String add() throws IOException {
@@ -389,6 +416,22 @@ public class OrderDetailAction extends BaseAction<OrderDetail> {
 
 	public void setOrderid(String orderid) {
 		this.orderid = orderid;
+	}
+
+	public String getFirsttime() {
+		return firsttime;
+	}
+
+	public String getSecondtime() {
+		return secondtime;
+	}
+
+	public void setFirsttime(String firsttime) {
+		this.firsttime = firsttime;
+	}
+
+	public void setSecondtime(String secondtime) {
+		this.secondtime = secondtime;
 	}
 
 

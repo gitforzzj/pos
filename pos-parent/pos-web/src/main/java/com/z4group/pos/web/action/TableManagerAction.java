@@ -14,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import com.mysql.jdbc.StringUtils;
 import com.opensymphony.xwork2.ActionContext;
-import com.z4group.pos.domain.Category;
 import com.z4group.pos.domain.DinnerTable;
+import com.z4group.pos.domain.Order;
 import com.z4group.pos.domain.OrderDetail;
 import com.z4group.pos.domain.TableStatus;
+import com.z4group.pos.service.IOrderService;
 import com.z4group.pos.service.ITableManagerService;
 import com.z4group.pos.service.ITableStatusService;
 import com.z4group.pos.web.action.base.BaseAction;
@@ -36,9 +36,15 @@ public class TableManagerAction extends BaseAction<DinnerTable> {
 	private ITableManagerService tableManagerService;
 	@Autowired
 	private ITableStatusService tableStatusService;
-	
+	@Autowired
+	private IOrderService orderService;
 	private String oid;
 	private Integer statusid;
+	//换桌的当前桌号
+	private String currentTableid;
+	//换桌的桌号
+	private String changeTableid;
+	
 	/*
 	 * 分页查询，调用service执行业务方法，并将查到的数据转为json对象
 	 */
@@ -79,6 +85,13 @@ public class TableManagerAction extends BaseAction<DinnerTable> {
 	}
 	
 
+	public String findEmptySeat() {
+		List<DinnerTable> list = tableManagerService.findEmptySeat(model.getSeatnum());
+		this.java2json(list, new String[] {"orders","dinnerTables"});
+		return NONE;
+		
+	}
+	
 	public String findNoSeat() {
 		List<DinnerTable> list = tableManagerService.findNoSeat();
 		this.java2json(list, new String[] {"orders","dinnerTables"});
@@ -93,6 +106,34 @@ public class TableManagerAction extends BaseAction<DinnerTable> {
         session.put(model.getId(), oid);
         /*ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
 		ServletActionContext.getResponse().getWriter().print(model.getId());*/
+		return NONE;
+	}
+	
+	public String changeTable() throws IOException {
+		String f = "1";
+		try {
+		DinnerTable currentTable = tableManagerService.findById(currentTableid);
+		DinnerTable changeTable = tableManagerService.findById(changeTableid);
+		//设置改变后的为当前的
+		changeTable.setOrderTime(currentTable.getOrderTime());
+		changeTable.setTableStatus(currentTable.getTableStatus());
+		changeTable.setOrderNo(currentTable.getOrderNo());
+		tableManagerService.update(changeTable);
+		//设置当前的为空
+		currentTable.setTableStatus(tableStatusService.findById(4));
+		Order order = orderService.findById(currentTable.getOrderNo());
+		currentTable.setOrderNo(null);
+		currentTable.setOrderTime(null);
+		
+		order.setDinnerTable(changeTable);
+		orderService.update(order);
+		}catch(Exception e){
+			e.printStackTrace();
+			f="-1";
+		}
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		ServletActionContext.getResponse().getWriter().print(f);
+		
 		return NONE;
 	}
 	
@@ -124,7 +165,8 @@ public class TableManagerAction extends BaseAction<DinnerTable> {
 		try {
 		
 			DinnerTable table = tableManagerService.findById(model.getId());
-			table.setOrders(null);
+				
+				table.setOrderNo(null);
 				table.setOrderTime(null);
 				table.setTableStatus(tableStatusService.findById(1));;
 				tableManagerService.update(table);
@@ -152,6 +194,22 @@ public class TableManagerAction extends BaseAction<DinnerTable> {
 
 	public void setStatusid(Integer statusid) {
 		this.statusid = statusid;
+	}
+
+	public String getCurrentTableid() {
+		return currentTableid;
+	}
+
+	public String getChangeTableid() {
+		return changeTableid;
+	}
+
+	public void setCurrentTableid(String currentTableid) {
+		this.currentTableid = currentTableid;
+	}
+
+	public void setChangeTableid(String changeTableid) {
+		this.changeTableid = changeTableid;
 	}
 
 

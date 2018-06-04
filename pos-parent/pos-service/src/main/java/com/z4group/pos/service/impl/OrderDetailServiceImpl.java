@@ -1,6 +1,8 @@
 package com.z4group.pos.service.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +52,16 @@ public class OrderDetailServiceImpl implements IOrderDetailService{
 	public void deleteById(String itemid) {
 		// TODO Auto-generated method stub
 		orderDetailDao.deleteById(itemid);
+	}
+
+
+	
+
+
+	@Override
+	public List<Object> countSaleNum(Timestamp ts1, Timestamp ts2) {
+		// TODO Auto-generated method stub
+		return orderDetailDao.countSaleNum(ts1,ts2);
 	}
 	
 }

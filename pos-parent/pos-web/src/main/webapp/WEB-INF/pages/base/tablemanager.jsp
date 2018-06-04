@@ -127,6 +127,32 @@
 			
 	}
 	
+	function changeTable(index){
+		$('#grid').datagrid('selectRow', index);  
+	   	 var rows = $("#grid").datagrid("getSelections");
+	   	$("input[name=currentTableid]").val(rows[0].tableNo);	
+	   	 if(rows.length == 1){
+	   		 if(rows[0].tableStatus.statusid==1){
+	   			$.messager.alert("提示信息","该桌是空桌,不需要换桌","error");
+	   		 }else{
+	   			
+	   			$('input[name=changeTablenum]').val(null);
+	   			$('input[name=changeTableid]').val(null);
+	   			$('#changeTablenid').combobox('clear');
+	   			$('#changeTableWindow').window("open");
+	   			
+	   			
+	   			
+	   		 }
+			
+			
+		}else{
+			$.messager.alert("提示信息","请选择一个桌子换桌","error");
+		}
+		
+		
+	}
+	
 
 	function endOrderWindow(index){
 		
@@ -157,6 +183,8 @@
 		
 		
 	}
+	
+	
 	
 	function editOrderWindow(index){
 		$('#editOrderWindow').window("open");
@@ -220,7 +248,46 @@
 		           
 		    }  
 		
-   
+		  function searchEmptyTable(value,name){ //用户输入用户名,点击搜素,触发此函数  
+			 
+			  var seatnum=$("input[name=changeTablenum]").val();
+		  		if(seatnum=="输入就餐人数"){
+		  			seatnum=null;
+		  		}
+	   			if(seatnum==null||seatnum==""){
+	   				
+	   			}else{
+	   			 $("#changeTableid").attr("disabled", false);
+		   			$('#changeTableid').combobox({ 
+
+		   				url:'tableManagerAction_findEmptySeat.action?seatnum='+seatnum,
+
+		   				 valueField:'id', 
+
+		   				textField:'tableNo', 
+		   				editable:false,
+		   				 required: true,
+		   				 message: '请选择桌号' ,
+		   			    onLoadSuccess: function () { //加载完成后,val[0]写死设置选中第一项
+		   			    	var comboxVal = $(this).combobox('getData');
+		   			    	 if(comboxVal!=null&&comboxVal!=""){
+		   			    		$('#changeTableid').combobox('setValue', comboxVal[0].id);
+		   			    		$("input[name=changeTableid]").val(comboxVal[0].id);
+		   			    	} 
+		   			    	
+
+		   		           
+
+		   		        },
+		   			onSelect: function(data){ 
+	   			    	 $("input[name=changeTableid]").val(data.id);
+
+	   			    		}
+
+		   			});
+	   			}
+	   			 
+		    }  
 		  
 	
 	//工具栏
@@ -278,10 +345,10 @@
 			      return str; 
 			}else{
 				if(row.tableStatus.statusid=="3"){
-					var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a>  <a href="#"  name="paymoney" class="easyui-linkbutton" onclick="endOrderWindow('+index+')"></a>';  
+					var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a>  <a href="#"  name="paymoney" class="easyui-linkbutton" onclick="endOrderWindow('+index+')"></a> ';  
 				      return str;  
 				}else if(row.tableStatus.statusid=="2"){
-					var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a>';  
+					var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a> ';  
 				      return str;  
 				    
 				}else if(row.tableStatus.statusid=="1"){
@@ -455,7 +522,7 @@
 		            rownumbers : true ,
 		            border : true,
 			
-			onDblClickRow : doDblClickRow,
+			onDblClickRow : changeTable,
 			
 			
 			
@@ -519,7 +586,18 @@
 		　	　window.location.reload();
 		　　}; 
 		
-		// 修改区域窗口
+		// 换桌窗口
+		$('#changeTableWindow').window({
+	        title: '选择桌号',
+	        width: 400,
+	        modal: true,
+	        shadow: true,
+	        closed: true,
+	        height: 150,
+	        resizable:false
+	    });
+		
+		// 修改菜单列表窗口
 		$('#editOrderWindow').window({
 	        title: '结账',
 	        width: 400,
@@ -529,6 +607,7 @@
 	        height: 400,
 	        resizable:false
 	    });
+		
 		
 		$('#category').combobox({ 
 
@@ -582,7 +661,25 @@
 		});
 		} */
 		
-		
+	$("#changeTablebtn").click(function(){
+			var p=$("#changeTableForm").serializeJson();
+			var v=$("#changeTableForm").form("validate");
+			
+			/* if(v){ */
+				$("#changeTableWindow").window("close");
+				alert("789");
+				$.post('tableManagerAction_changeTable.action',p,function(data){
+					 if(data == 1){
+						
+						$.messager.alert("提示信息","换桌成功!","info");
+						$("#grid").datagrid("load");
+					} 
+				}); 
+			/* } */
+			
+			
+			
+		}); 
 		
 		$("#btn").click(function(){
 			
@@ -768,6 +865,33 @@
 			</div>
 	</div>
 	
+	<div class="easyui-window" title="换桌" id="changeTableWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
+		<div region="center" style="overflow:auto;padding:5px;" border="false">
+				
+				<form id="changeTableForm" method="post">
+					<table class="table-edit" width="80%" align="center">
+					<input type="hidden" id="currentTableid" name="currentTableid"/>
+						<tr>
+							<td>换桌人数</td>
+							<td>
+							<input id="changeTablenum" name="changeTablenum" class="easyui-searchbox" prompt="输入就餐人数"
+						       searcher="searchEmptyTable" required="true" class="easyui-numberbox" style="width: 160px; vertical-align: middle;">
+						      </input>
+						    </td>
+							
+						</tr>
+						<tr>
+							<td>餐桌号</td>
+							<td><input id="changeTableid" name="changeTableid" value="请选择桌号" disabled="true" required="true" class="easyui-numberbox" /></td>
+						</tr>
+						<tr>
+							
+						<td colspan="1"><a id="changeTablebtn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">换桌</a> </td>
+						</tr> 
+						</table>
+				</form>
+			</div>
+	</div>
 	
 	
 	 <script type="text/javascript">

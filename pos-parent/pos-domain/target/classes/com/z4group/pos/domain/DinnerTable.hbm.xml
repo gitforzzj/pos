@@ -14,7 +14,7 @@
             <column name="tableStatusId" />
         </many-to-one>
         <property name="tableNo" type="integer">
-            <column name="tableNo" not-null="true" />
+            <column name="tableNo" />
         </property>
         <property name="seatnum" type="integer">
             <column name="seatnum" />

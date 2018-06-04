@@ -1,8 +1,11 @@
 package com.z4group.pos.dao.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.springframework.stereotype.Repository;
@@ -33,4 +36,18 @@ public class OrderDetailDaoImpl extends BaseDaoImpl<OrderDetail> implements IOrd
 		pageBean.setRows(list);
 	}
 
+	@Override
+	public List<Object> countSaleNum(Timestamp ts1, Timestamp ts2) { 
+		Session session = this.getSessionFactory().getCurrentSession();
+		String hql = "SELECT r.dishname, count(*),count(num) FROM OrderDetail o  LEFT OUTER JOIN o.dishes r LEFT OUTER JOIN o.order ord  "
+				+ " where ord.ordertime between ? and ? GROUP BY r.dishname";
+	    Query query = session.createQuery(hql);   
+		query.setFirstResult(0);
+		query.setMaxResults(10);
+		query.setTimestamp(0, ts1);
+		query.setTimestamp(1, ts2);
+		return (List<Object>) query.list();
+	}
+
 }
+

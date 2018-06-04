@@ -17,8 +17,14 @@ public class TableManagerDaoImpl  extends BaseDaoImpl<DinnerTable> implements IT
 
 	@Override
 	public List<DinnerTable> findNoSeat() {
-			String hql = "from DinnerTable where tableStatus!=0";
+			String hql = "from DinnerTable where tableStatus!=1";
 			return  (List<DinnerTable>) this.getHibernateTemplate().find(hql);
+	}
+
+	@Override
+	public List<DinnerTable> findEmptySeat(Integer seatnum) {
+		String hql = "from DinnerTable as d where d.tableStatus.statusid=1 and d.seatnum>=? ";
+		return  (List<DinnerTable>) this.getHibernateTemplate().find(hql,seatnum);
 	}
 
 }

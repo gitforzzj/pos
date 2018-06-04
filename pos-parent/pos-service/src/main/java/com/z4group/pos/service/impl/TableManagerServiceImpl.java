@@ -2,6 +2,8 @@ package com.z4group.pos.service.impl;
 
 import java.util.List;
 
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +48,16 @@ public class TableManagerServiceImpl implements ITableManagerService{
 	public void update(DinnerTable table) {
 		// TODO Auto-generated method stub
 		tableManagerDao.update(table);
+	}
+
+
+
+	@Override
+	public List<DinnerTable> findEmptySeat(Integer seatnum) {
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(DinnerTable.class);
+		detachedCriteria.add(Restrictions.eq("tableStatus.statusid", 1))
+			.add(Restrictions.or(Restrictions.eq("seatnum", new Integer(seatnum)),Restrictions.gt("seatnum",new Integer(seatnum))));
+		return tableManagerDao.findByCriteria(detachedCriteria);
 	}
 
 }

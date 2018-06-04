@@ -19,4 +19,7 @@ public interface ITableManagerService {
 	void update(DinnerTable table);
 
 
+	List<DinnerTable> findEmptySeat(Integer seatnum);
+
+
 }

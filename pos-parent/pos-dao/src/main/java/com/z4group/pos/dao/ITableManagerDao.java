@@ -12,5 +12,7 @@ public interface ITableManagerDao extends IBaseDao<DinnerTable>{
 
 	List<DinnerTable> findNoSeat();
 
+	List<DinnerTable> findEmptySeat(Integer seatnum);
+
 
 }
