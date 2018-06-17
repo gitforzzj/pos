@@ -348,7 +348,7 @@
 					var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a>  <a href="#"  name="paymoney" class="easyui-linkbutton" onclick="endOrderWindow('+index+')"></a> ';  
 				      return str;  
 				}else if(row.tableStatus.statusid=="2"){
-					var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a> ';  
+					var str = '<a href="#" id="orderDish" name="orderdish" class="easyui-linkbutton" onclick="orderDish('+index+')"></a> <a href="#"  name="cleantable" class="easyui-linkbutton" onclick="cleantable('+index+')"></a>';  
 				      return str;  
 				    
 				}else if(row.tableStatus.statusid=="1"){

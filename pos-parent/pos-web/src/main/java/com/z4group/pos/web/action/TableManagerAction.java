@@ -127,6 +127,7 @@ public class TableManagerAction extends BaseAction<DinnerTable> {
 		
 		order.setDinnerTable(changeTable);
 		orderService.update(order);
+		tableManagerService.update(currentTable);
 		}catch(Exception e){
 			e.printStackTrace();
 			f="-1";

@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>z4豪华西餐店</title>
+<title>27西餐厅POS</title>
 <!-- 导入jquery核心类库 -->
 <script type="text/javascript"
 	src="${pageContext.request.contextPath }/js/jquery-1.8.3.js"></script>
@@ -184,7 +184,7 @@
 	}
 	// 版权信息
 	function showAbout(){
-		$.messager.alert("宅急送 v1.0","管理员邮箱: zqx@itcast.cn");
+		$.messager.alert("imis27出品","管理员邮箱: 1272131962@qq.com");
 	}
 </script>
 </head>
@@ -243,7 +243,7 @@
 				<tr>
 					<td style="width: 300px;">
 						<div style="color: #999; font-size: 8pt;">
-							z4豪华酒店 | Powered by 
+							27西餐厅POS| Powered by 
 						</div>
 					</td>
 					<td style="width: *;" class="co1"><span id="online"

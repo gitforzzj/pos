@@ -16,10 +16,10 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.z4group.pos.dao.base.IBaseDao;
 import com.z4group.pos.utils.PageBean;
-
 
 public class BaseDaoImpl<T> extends HibernateDaoSupport implements IBaseDao<T> {
 

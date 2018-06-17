@@ -47,7 +47,7 @@
 			      		},
 			      		tooltip: {
 			      				headerFormat: '{series.name}<br>',
-			      				pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>'
+			      				pointFormat:  '{point.name}: <b>{point.percentage:.1f}%</b><br>数量:<b>{point.y}份</b>'
 			      		},
 			      		plotOptions: {
 			      				pie: {
@@ -55,7 +55,12 @@
 			      						cursor: 'pointer',
 			      						dataLabels: {
 			      								enabled: true,
-			      								format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+			      								formatter: function () {  
+		    	                                    //Highcharts.numberFormat(this.percentage,2)格式化数字，保留2位精度  
+		    	                                    //Highcharts.numberFormat(this.y, 0, ',')显示百分化之前的真实数据  
+		    	                                    return '<b>' + this.point.name + '</b>: ' + Highcharts.numberFormat(this.percentage, 2) + ' %('+  
+		    	                                            Highcharts.numberFormat(this.y, 0, ',') +' 份)';  
+		    	                                } , 
 			      								style: {
 			      										color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
 			      								}
@@ -121,15 +126,20 @@
 	    		},
 	    		tooltip: {
 	    				headerFormat: '{series.name}<br>',
-	    				pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>'
+	    				pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b><br>数量:<b>{point.y}份</b>'
 	    		},
 	    		plotOptions: {
 	    				pie: {
 	    						allowPointSelect: true,
 	    						cursor: 'pointer',
-	    						dataLabels: {
+	    						dataLabels: {   
 	    								enabled: true,
-	    								format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+	    								 formatter: function () {  
+	    	                                    //Highcharts.numberFormat(this.percentage,2)格式化数字，保留2位精度  
+	    	                                    //Highcharts.numberFormat(this.y, 0, ',')显示百分化之前的真实数据  
+	    	                                    return '<b>' + this.point.name + '</b>: ' + Highcharts.numberFormat(this.percentage, 2) + ' %('+  
+	    	                                            Highcharts.numberFormat(this.y, 0, ',') +' 份)';  
+	    	                                } ,  
 	    								style: {
 	    										color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
 	    								}
