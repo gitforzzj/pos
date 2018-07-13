@@ -31,10 +31,10 @@
 #### 项目截图
 餐台界面
 
-![餐台界面](https://gitee.com/uploads/images/2018/0617/220339_45f7438e_1667883.png "微信截图_20180617220026.png")
+![餐台界面](https://github.com/gitforzzj/pos/blob/master/pos-parent/images/%E7%82%B9%E8%8F%9C%E7%95%8C%E9%9D%A2.png)
 点菜界面
 
-![点菜界面](https://gitee.com/uploads/images/2018/0617/220351_7cda6b9a_1667883.png "微信截图_20180617220056.png")
+![点菜界面](https://github.com/gitforzzj/pos/blob/master/pos-parent/images/%E9%A4%90%E5%8F%B0%E7%95%8C%E9%9D%A2.png)
 支付界面
 
 ![支付界面](https://gitee.com/uploads/images/2018/0617/220401_ccf520b1_1667883.png "微信截图_20180617220115.png")
