@@ -40,6 +40,9 @@
 ![支付界面](https://gitee.com/uploads/images/2018/0617/220401_ccf520b1_1667883.png "微信截图_20180617220115.png")
 报表界面
 
+![结账界面](https://github.com/gitforzzj/pos/blob/master/pos-parent/images/%E8%BF%9B%E8%A1%8C%E6%94%AF%E4%BB%98.png)
+报表界面
+
 ![报表界面](https://gitee.com/uploads/images/2018/0617/220412_50df52e0_1667883.png "微信截图_20180617220124.png")
 菜单管理界面
 
